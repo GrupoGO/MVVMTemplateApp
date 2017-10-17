@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.grupogo.mvvmtemplateapp.R;
+import com.grupogo.mvvmtemplateapp.ui.items.ItemListFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
