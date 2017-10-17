@@ -4,7 +4,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.widget.FrameLayout;
 
 import com.grupogo.mvvmtemplateapp.R;
 
@@ -22,7 +21,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         bindToolbar();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, ListItemsFragment, "ListItemsFragment").commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_layout, ItemListFragment.newInstance(), "ItemListFragment")
+                .commit();
     }
 
     private void bindToolbar(){
