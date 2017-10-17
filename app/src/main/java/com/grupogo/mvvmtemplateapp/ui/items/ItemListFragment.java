@@ -64,6 +64,7 @@ public class ItemListFragment extends Fragment {
             public void onChanged(@Nullable List<Item> items) {
                 if (items!=null) {
                     adapter.setDataSet(items);
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
