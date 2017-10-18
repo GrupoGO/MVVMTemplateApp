@@ -1,7 +1,9 @@
 package com.grupogo.mvvmtemplateapp.ui.items;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,17 +13,23 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.grupogo.mvvmtemplateapp.R;
+import com.grupogo.mvvmtemplateapp.TemplateApplication;
 import com.grupogo.mvvmtemplateapp.model.datamodel.Item;
 import com.grupogo.mvvmtemplateapp.model.viewmodel.ItemListViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ItemListFragment extends Fragment {
 
     private ItemListAdapter adapter;
-    private ItemListViewModel itemListViewModel;
+    @Inject ViewModelProvider.Factory mViewModelFactory;
+
+    ItemListViewModel itemListViewModel;
 
     public static ItemListFragment newInstance() {
         ItemListFragment fragment = new ItemListFragment();
@@ -40,8 +48,16 @@ public class ItemListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        itemListViewModel = ViewModelProviders.of(this).get(ItemListViewModel.class);
+        ((TemplateApplication)getActivity().getApplication()).getAppComponent().inject(this);
+        itemListViewModel = ViewModelProviders.of(getActivity(), mViewModelFactory).get(ItemListViewModel.class);
         itemListViewModel.init();
+        itemListViewModel.getItems().observe(this, response ->  {
+            if(response.getData()!=null){
+                handleSuccess((List<Item>) response.getData());
+            } else {
+                handleError(response.getError());
+            }
+        });
     }
 
     @Override
@@ -57,16 +73,15 @@ public class ItemListFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycler);
         adapter = new ItemListAdapter(getContext());
         recyclerView.setAdapter(adapter);
+    }
 
-        itemListViewModel.getItems().observe(this, new Observer<List<Item>>() {
+    public void handleSuccess(List<Item> items){
+        if (items!=null) {
+            adapter.setDataSet(items);
+        }
+    }
 
-            @Override
-            public void onChanged(@Nullable List<Item> items) {
-                if (items!=null) {
-                    adapter.setDataSet(items);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
+    public void handleError(Throwable t){
+        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

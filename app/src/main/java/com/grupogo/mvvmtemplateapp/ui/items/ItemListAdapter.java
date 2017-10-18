@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.grupogo.mvvmtemplateapp.R;
 import com.grupogo.mvvmtemplateapp.model.datamodel.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class ItemListAdapter extends Adapter<ItemListAdapter.ItemViewHolder>{
 
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
     private LayoutInflater inflater;
 
     public ItemListAdapter(Context context) {
@@ -46,6 +47,7 @@ public class ItemListAdapter extends Adapter<ItemListAdapter.ItemViewHolder>{
 
     public void setDataSet(List<Item> items) {
         this.items = items;
+        notifyDataSetChanged();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
